@@ -20,7 +20,7 @@ An example of doing a single read from the rfid reader.
 Shows a OSD notification whenever a tag is read by the receiver.
 Requires pyinotify.
 
-#### pam\_rfidauth.py
+#### pam\_rfid.py
 This is probably the most interesting application example. It is a complete
 PAM authentication module for authentication through RFID tags.
 Configuration instructions are inside the source file.
