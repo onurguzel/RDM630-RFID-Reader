@@ -1,11 +1,10 @@
-RDM630 125Khz RFID Reader
-=========================
+Sparkfun RFID Reader
+====================
 
-This is a python module for reading values from a RDM630 rfid receiver.
+This is a Python module for reading values from a Sparkfun RFID receiver.
 It supports both single read from the receiver and continuous polling,
-giving results back through callbacks.
-It also support autodiscovery of the reader (assuming there's only one
-plugged in).
+giving results back through callbacks. It also support autodiscovery of the
+reader (assuming there's only one plugged in).
 
 ### Requirements:
 * pyserial
