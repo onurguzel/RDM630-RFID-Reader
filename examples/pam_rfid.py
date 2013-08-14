@@ -36,13 +36,24 @@ import rfidreader
 TIMEOUT_SECONDS = 10
 
 
-def authenticate(username, rfid_tag):
+def authenticate(username, argv=None):
     """Return true if the user has the given rfid tag stored
     in ~/.rfidtags"""
     tagfile = os.path.join(
         os.path.expanduser("~" + username),
         ".rfidtags"
     )
+
+    if not os.path.exists(tagfile):
+        return False
+
+    try:
+        port = argv[1]
+    except TypeError, IndexError:
+        port = None
+
+    rfid_tag = read_tag(port)
+
     tags = [tag.strip() for tag in file(tagfile).readlines()]
     return rfid_tag in tags
 
@@ -73,11 +84,6 @@ def pam_sm_authenticate(pamh, flags, argv):
         return pamh.PAM_USER_UNKNOWN
 
     try:
-        port = argv[1]
-    except IndexError:
-        port = None
-
-    try:
         pamh.conversation(pamh.Message(pamh.PAM_TEXT_INFO,
                                        "Please pass your RFID tag"))
     except pamh.exception:
@@ -88,11 +94,7 @@ def pam_sm_authenticate(pamh, flags, argv):
         # info message
         pass
 
-    rfid = read_tag(port=port)
-    if not rfid:
-        return pamh.PAM_AUTH_ERR
-
-    if authenticate(user, rfid):
+    if authenticate(user):
         return pamh.PAM_SUCCESS
     else:
         return pamh.PAM_AUTH_ERR
@@ -102,13 +104,9 @@ def pam_sm_setcred(pamh, flags, argv):
     return pamh.PAM_SUCCESS
 
 if __name__ == "__main__":
-    rfid = read_tag()
-    if not rfid:
-        print "can't read rfid"
-        sys.exit(1)
     import pwd
     user = pwd.getpwuid(os.getuid())[0]
-    auth_ok = authenticate(user, rfid)
+    auth_ok = authenticate(user, sys.argv)
     if not auth_ok:
         print "authentication failure"
     else:
