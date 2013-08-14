@@ -35,6 +35,7 @@ import rfidreader
 
 TIMEOUT_SECONDS = 10
 
+
 def authenticate(username, rfid_tag):
     """Return true if the user has the given rfid tag stored
     in ~/.rfidtags"""
@@ -44,6 +45,7 @@ def authenticate(username, rfid_tag):
     )
     tags = [tag.strip() for tag in file(tagfile).readlines()]
     return rfid_tag in tags
+
 
 def read_tag(port=None, timeout=TIMEOUT_SECONDS):
     "Read a rfid tag from the rfid reader"
@@ -60,6 +62,7 @@ def read_tag(port=None, timeout=TIMEOUT_SECONDS):
         return None
     return rfid.get_tag()
 
+
 def pam_sm_authenticate(pamh, flags, argv):
     try:
         user = pamh.get_user(None)
@@ -75,10 +78,11 @@ def pam_sm_authenticate(pamh, flags, argv):
         port = None
 
     try:
-        pamh.conversation(pamh.Message(pamh.PAM_TEXT_INFO, "Please pass your RFID tag"))
+        pamh.conversation(pamh.Message(pamh.PAM_TEXT_INFO,
+                                       "Please pass your RFID tag"))
     except pamh.exception:
         # gnome-screensaver will raise a conversation exception in case
-        # of a missing keyboard input, we ignore that exception and 
+        # of a missing keyboard input, we ignore that exception and
         # continue the auth process anyway. In this way gnome-screensaver
         # will also disable the password textarea and only show our
         # info message
@@ -92,6 +96,7 @@ def pam_sm_authenticate(pamh, flags, argv):
         return pamh.PAM_SUCCESS
     else:
         return pamh.PAM_AUTH_ERR
+
 
 def pam_sm_setcred(pamh, flags, argv):
     return pamh.PAM_SUCCESS
@@ -108,4 +113,3 @@ if __name__ == "__main__":
         print "authentication failure"
     else:
         print "authentication ok"
-
