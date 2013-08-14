@@ -10,7 +10,7 @@ import os
 import sys
 import serial
 
-RFID_STRING_LENGTH = 14
+RFID_STRING_LENGTH = 16
 USB_CONVERTER_PRODUCT_CODE = "403/6001/600"
 
 
